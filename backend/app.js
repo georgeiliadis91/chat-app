@@ -1,16 +1,24 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
+const cors = require("cors");
 
-const port = process.env.PORT || 4001;
+require("dotenv").config();
+
 const index = require("./routes/index");
 
 const app = express();
+app.use(cors("*"));
 
 app.use(index);
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 let interval;
 
@@ -28,7 +36,8 @@ io.on("connection", (socket) => {
 });
 
 const emitStatusMessage = (socket) => {
-  socket.emit("Coonection is active");
+  socket.emit("message", "Connection is active");
 };
 
+const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`Listening on port ${port}`));

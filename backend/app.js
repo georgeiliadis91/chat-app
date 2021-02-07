@@ -23,21 +23,18 @@ const io = socketIo(server, {
 let interval;
 
 io.on("connection", (socket) => {
-  if (interval) {
-    clearInterval(interval);
-  }
+  socket.emit("message", "Connection is active");
 
-  interval = setInterval(() => emitStatusMessage(socket), 1000);
+  socket.on("message", (msg) => {
+    socket.emit("message", `Mirroring the response back to you - ${msg}`);
+    console.log(msg);
+  });
 
   socket.on("disconnect", () => {
     socket.emit("Connection is closed");
     clearInterval(interval);
   });
 });
-
-const emitStatusMessage = (socket) => {
-  socket.emit("message", "Connection is active");
-};
 
 const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`Listening on port ${port}`));

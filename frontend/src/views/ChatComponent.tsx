@@ -1,9 +1,8 @@
-import { link } from "fs";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import socketIOClient from "socket.io-client";
 import { REACT_APP_ENDPOINT } from "../constants/constants";
-
+import "./ChatComponent.scss";
 interface Props {}
 
 type FormData = {
@@ -12,35 +11,36 @@ type FormData = {
 
 export const ChatComponent = (props: Props) => {
   const [messageList, setMessageList] = useState<string[]>([]);
+  const [socket] = useState(socketIOClient(REACT_APP_ENDPOINT));
 
-  const socket = useRef<SocketIOClient.Socket>();
+  // const socket = useRef<SocketIOClient.Socket>();
 
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit, setValue } = useForm<FormData>();
 
   const onSubmit = handleSubmit(({ message }) => {
-    socket.current?.send(message);
+    setMessageList((prevState) => {
+      return [...prevState, message];
+    });
+    socket.send(message);
+    setValue("message", "");
   });
 
   useEffect(() => {
-    socket.current = socketIOClient(REACT_APP_ENDPOINT);
-
-    socket.current.on("message", (data: any) => {
+    socket.on("message", (data: any) => {
       setMessageList((prevState) => {
         return [...prevState, data];
       });
     });
 
     return () => {
-      if (socket?.current) {
-        socket.current.disconnect();
-      }
+      socket.disconnect();
     };
-  }, []);
+  }, [socket]);
 
   return (
-    <Fragment>
-      <form onSubmit={onSubmit}>
-        <input name="message" ref={register} />
+    <div className="chat-container">
+      <form onSubmit={onSubmit} className="form-input">
+        <input className="message-box" name="message" ref={register} />
         <input type="submit" />
       </form>
       <ul>
@@ -50,6 +50,6 @@ export const ChatComponent = (props: Props) => {
           </li>
         ))}
       </ul>
-    </Fragment>
+    </div>
   );
 };

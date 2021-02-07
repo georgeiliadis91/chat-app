@@ -1,0 +1,11 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 2rem auto 0;
+  width: 650px;
+  .chat-body {
+    width: 100%;
+  }
+}

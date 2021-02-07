@@ -1,22 +1,25 @@
 import React, { Fragment, useState } from "react";
 import { ChatComponent } from "./views/ChatComponent";
+import "./App.scss";
 
 function App() {
   const [loadClient, setLoadClient] = useState(true);
 
   return (
-    <Fragment>
-      <button onClick={() => setLoadClient((prevState) => !prevState)}>
-        Open Chat
+    <main>
+      <button
+        className="toggle-chat"
+        onClick={() => setLoadClient((prevState) => !prevState)}
+      >
+        Toggle Chat
       </button>
 
-      <br />
       {loadClient ? (
         <div className="chat-body">
           <ChatComponent />
         </div>
       ) : null}
-    </Fragment>
+    </main>
   );
 }
 

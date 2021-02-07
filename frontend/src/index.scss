@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+// chat coloring
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  li {
+    margin: 0.15rem 0.25rem;
+    &:nth-of-type(odd) {
+      color: red;
+    }
+    &:nth-of-type(even) {
+      color: blue;
+    }
+  }
+}

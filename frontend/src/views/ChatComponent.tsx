@@ -1,36 +1,55 @@
 import { link } from "fs";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import socketIOClient from "socket.io-client";
 import { REACT_APP_ENDPOINT } from "../constants/constants";
 
 interface Props {}
 
+type FormData = {
+  message: string;
+};
+
 export const ChatComponent = (props: Props) => {
   const [messageList, setMessageList] = useState<string[]>([]);
 
-  console.log("the REACT_APP_ENDPOINT", REACT_APP_ENDPOINT);
+  const socket = useRef<SocketIOClient.Socket>();
+
+  const { register, handleSubmit } = useForm<FormData>();
+
+  const onSubmit = handleSubmit(({ message }) => {
+    socket.current?.send(message);
+  });
 
   useEffect(() => {
-    const socket: SocketIOClient.Socket = socketIOClient(REACT_APP_ENDPOINT);
+    socket.current = socketIOClient(REACT_APP_ENDPOINT);
 
-    socket.on("message", (data: any) => {
+    socket.current.on("message", (data: any) => {
       setMessageList((prevState) => {
         return [...prevState, data];
       });
     });
 
     return () => {
-      socket.disconnect();
+      if (socket?.current) {
+        socket.current.disconnect();
+      }
     };
   }, []);
 
   return (
-    <ul>
-      {messageList.map((message, index) => (
-        <li>
-          #{index + 1} - {message}
-        </li>
-      ))}
-    </ul>
+    <Fragment>
+      <form onSubmit={onSubmit}>
+        <input name="message" ref={register} />
+        <input type="submit" />
+      </form>
+      <ul>
+        {messageList.map((message, index) => (
+          <li>
+            #{index + 1} - {message}
+          </li>
+        ))}
+      </ul>
+    </Fragment>
   );
 };

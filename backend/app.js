@@ -26,8 +26,7 @@ io.on("connection", (socket) => {
   socket.emit("message", "Connection is active");
 
   socket.on("message", (msg) => {
-    socket.emit("message", `Mirroring the response back to you - ${msg}`);
-    console.log(msg);
+    socket.emit("message", `ChatBot- ${msg}`);
   });
 
   socket.on("disconnect", () => {

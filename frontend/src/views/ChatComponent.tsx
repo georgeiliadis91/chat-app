@@ -39,17 +39,17 @@ export const ChatComponent = (props: Props) => {
 
   return (
     <div className="chat-container">
-      <form onSubmit={onSubmit} className="form-input">
-        <input className="message-box" name="message" ref={register} />
-        <input type="submit" />
-      </form>
-      <ul>
+      <ul className="chat-box">
         {messageList.map((message, index) => (
           <li>
             #{index + 1} - {message}
           </li>
         ))}
       </ul>
+      <form onSubmit={onSubmit} className="form-input">
+        <input className="message-box" name="message" ref={register} />
+        <input type="submit" />
+      </form>
     </div>
   );
 };

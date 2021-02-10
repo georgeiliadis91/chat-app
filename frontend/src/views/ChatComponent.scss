@@ -1,11 +1,16 @@
 .chat-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 700px;
+  .chat-box {
+    height: 100%;
+    overflow: auto;
+  }
   .form-input {
     display: flex;
     margin-top: 1rem;
-
     .message-box {
       flex-grow: 3;
     }
